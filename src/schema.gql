@@ -1,0 +1,359 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PhotoModel {
+  id: Int!
+  small: String
+  large: String
+  description: String
+  alt: String!
+}
+
+type VideoModel {
+  id: Int!
+  path: String
+  description: String
+  alt: String!
+}
+
+type AxisModel {
+  id: Int!
+  title: String
+  axisX: Int!
+  axisY: Int!
+}
+
+type PointModel {
+  id: Int!
+  title: String
+  description: String
+  axis: [AxisModel]
+  photos: [PhotoModel]
+  videos: [VideoModel]
+  route: String
+}
+
+type TownModel {
+  id: Int!
+  title: String
+  description: String
+  points: [PointModel]
+  axis: [AxisModel!]
+  photos: [PhotoModel]
+  videos: [VideoModel]
+}
+
+type TrackModel {
+  id: Int!
+  title: String
+  description: String
+  length: String
+  axises: [AxisModel]
+  photos: [PhotoModel]
+  videos: [VideoModel]
+  stops: [PointModel]
+  type: String
+  transport: String
+  timeInTrack: String
+  season: String
+  water: String
+}
+
+type ContactModel {
+  id: Int!
+  description: String
+}
+
+type MasterModel {
+  id: Int!
+  title: String
+  description: String
+  photos: [PhotoModel]
+  videos: [VideoModel]
+  contacts: [ContactModel]
+}
+
+type ServiceModel {
+  id: Int!
+  title: String
+  description: String
+  photos: [PhotoModel]
+  videos: [VideoModel]
+  contacts: [ContactModel]
+}
+
+type HolidayModel {
+  id: Int!
+  title: String
+  description: String
+  photos: [PhotoModel]
+  videos: [VideoModel]
+}
+
+type OoptModel {
+  id: Int!
+  title: String
+  description: String
+  photos: [PhotoModel]
+  videos: [VideoModel]
+  towns: [TownModel]
+  points: [PointModel]
+  tracks: [TrackModel]
+  borders: [AxisModel]
+  masters: [MasterModel]
+  services: [ServiceModel]
+  holidays: [HolidayModel]
+}
+
+type Query {
+  getAllOOPTs: [OoptModel!]
+  getOOPT(ooptUniqueInput: OoptUniqueInput!): OoptModel
+  getAllTowns: [TownModel!]
+  getTown(townUniqueInput: TownUniqueInput!): TownModel
+  getAllTracks: [TrackModel!]
+  getTrack(trackUniqueInput: TrackUniqueInput!): TrackModel
+  getAllPoints: [PointModel!]
+  getPoint(pointUniqueInput: PointUniqueInput!): PointModel
+  getAllAxises: [AxisModel!]
+  getAxis(axisUniqueInput: AxisUniqueInput!): AxisModel
+  getAllMasters: [MasterModel!]
+  getMaster(masterUniqueInput: MasterUniqueInput!): MasterModel
+  getAllServices: [ServiceModel!]
+  getService(serviceUniqueInput: ServiceUniqueInput!): ServiceModel
+  getAllContacts: [ContactModel!]
+  getContact(contactUniqueInput: ContactUniqueInput!): ContactModel
+  getAllHolidays: [HolidayModel!]
+  getHoliday(holidayUniqueInput: HolidayUniqueInput!): HolidayModel
+  getAllPhotos: [PhotoModel!]
+  getPhoto(photoUniqueInput: PhotoUniqueInput!): PhotoModel
+  getAllVideos: [VideoModel!]
+  getVideo(videoUniqueInput: VideoUniqueInput!): VideoModel
+}
+
+input OoptUniqueInput {
+  id: Float
+}
+
+input TownUniqueInput {
+  id: Float
+}
+
+input TrackUniqueInput {
+  id: Float
+}
+
+input PointUniqueInput {
+  id: Float
+}
+
+input AxisUniqueInput {
+  id: Float
+}
+
+input MasterUniqueInput {
+  id: Float
+}
+
+input ServiceUniqueInput {
+  id: Float
+}
+
+input ContactUniqueInput {
+  id: Float
+}
+
+input HolidayUniqueInput {
+  id: Float
+}
+
+input PhotoUniqueInput {
+  id: Float
+}
+
+input VideoUniqueInput {
+  id: Float
+}
+
+type Mutation {
+  updateOOPT(data: OoptUpdateInput!): OoptModel!
+  deleteOOPT(id: Float!): OoptModel!
+  createOOPT(data: OoptCreateInput!): OoptModel!
+  updateTown(data: TownUpdateInput!): TownModel!
+  deleteTown(id: Float!): TownModel!
+  createTown(data: TownCreateInput!): TownModel!
+  updateTrack(data: TrackUpdateInput!): TrackModel!
+  deleteTrack(id: Float!): TrackModel!
+  createTrack(data: TrackCreateInput!): TrackModel!
+  updatePoint(data: PointUpdateInput!): PointModel!
+  deletePoint(id: Float!): PointModel!
+  createPoint(data: PointCreateInput!): PointModel!
+  updateAxis(data: AxisUpdateInput!): AxisModel!
+  deleteAxis(id: Float!): AxisModel!
+  createAxis(data: AxisCreateInput!): AxisModel!
+  updateMaster(data: MasterUpdateInput!): MasterModel!
+  deleteMaster(id: Float!): MasterModel!
+  createMaster(data: MasterCreateInput!): MasterModel!
+  updateService(data: ServiceUpdateInput!): ServiceModel!
+  deleteService(id: Float!): ServiceModel!
+  createService(data: ServiceCreateInput!): ServiceModel!
+  updateContact(data: ContactUpdateInput!): ContactModel!
+  deleteContact(id: Float!): ContactModel!
+  createContact(data: ContactCreateInput!): ContactModel!
+  updateHoliday(data: HolidayUpdateInput!): HolidayModel!
+  deleteHoliday(id: Float!): HolidayModel!
+  createHoliday(data: HolidayCreateInput!): HolidayModel!
+  updatePhoto(data: PhotoUpdateInput!): PhotoModel!
+  deletePhoto(id: Float!): PhotoModel!
+  updateVideo(data: VideoUpdateInput!): VideoModel!
+  deleteVideo(id: Float!): VideoModel!
+  createVideo(data: VideoCreateInput!): VideoModel!
+}
+
+input OoptUpdateInput {
+  id: Int!
+  title: String
+  description: String
+}
+
+input OoptCreateInput {
+  title: String!
+  description: String
+}
+
+input TownUpdateInput {
+  id: Int!
+  title: String
+  description: String
+}
+
+input TownCreateInput {
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input TrackUpdateInput {
+  id: Int!
+  title: String
+  description: String
+  length: String
+  type: String
+  transport: String
+  timeInTrack: String
+  season: String
+  water: String
+}
+
+input TrackCreateInput {
+  title: String!
+  description: String
+  length: String
+  type: String
+  transport: String
+  timeInTrack: String
+  season: String
+  water: String
+  parentId: Int!
+}
+
+input PointUpdateInput {
+  id: Int!
+  title: String
+  description: String
+  route: String
+}
+
+input PointCreateInput {
+  title: String!
+  description: String
+  route: String
+  parent: String!
+  parentId: Int!
+}
+
+input AxisUpdateInput {
+  id: Int!
+  title: String
+  axisX: Int
+  axisY: Int
+}
+
+input AxisCreateInput {
+  title: String!
+  axisX: Int
+  axisY: Int
+  parent: String!
+  parentId: Int!
+}
+
+input MasterUpdateInput {
+  id: Int!
+  title: String
+  description: String
+  parentId: Int
+}
+
+input MasterCreateInput {
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input ServiceUpdateInput {
+  id: Int!
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input ServiceCreateInput {
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input ContactUpdateInput {
+  id: Int!
+  description: String
+  parent: String
+  parentId: Int
+}
+
+input ContactCreateInput {
+  description: String
+  parent: String!
+  parentId: Int!
+}
+
+input HolidayUpdateInput {
+  id: Int!
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input HolidayCreateInput {
+  title: String!
+  description: String
+  parentId: Int!
+}
+
+input PhotoUpdateInput {
+  id: Int!
+  description: String
+  alt: String
+}
+
+input VideoUpdateInput {
+  id: Int!
+  description: String
+  path: String!
+  alt: String
+}
+
+input VideoCreateInput {
+  description: String
+  path: String!
+  alt: String
+}

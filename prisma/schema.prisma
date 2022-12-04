@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model OOPT {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  photos Photo[]
+  videos Video[]
+  towns Town[]
+  points Point[]
+  tracks Track[]
+  borders Axis[]
+  masters Master[]
+  services Service[]
+  holidays Holiday[]
+}
+
+model Town {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  points Point[]
+  axis Axis[]
+  photos Photo[]
+  videos Video[]
+  belongs OOPT? @relation(fields: [belongsId], references: [id])
+  belongsId Int?
+  disabled Boolean? @default(false)
+}
+
+model Track {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  length String?
+  axises Axis[]
+  photos Photo[]
+  videos Video[]
+  stops Point[]
+  type String?
+  transport String?
+  timeInTrack String?
+  season String?
+  water String?
+  oopt OOPT? @relation(fields: [ooptId], references: [id])
+  ooptId Int?
+  disabled Boolean? @default(false)
+}
+
+model Point {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  axis Axis[]
+  photos Photo[]
+  videos Video[]
+  route String?
+  town Town? @relation(fields: [townId], references: [id])
+  townId Int?
+  oopt OOPT? @relation(fields: [ooptId], references: [id])
+  ooptId Int?
+  track Track? @relation(fields: [trackId], references: [id])
+  trackId Int?
+  disabled Boolean? @default(false)
+}
+
+model Axis {
+  id Int @id @default(autoincrement())
+  title String?
+  axisX Int @default(0)
+  axisY Int @default(0)
+  oopt OOPT? @relation(fields: [ooptId], references: [id])
+  ooptId Int?
+  town Town? @relation(fields: [townId], references: [id])
+  townId Int?
+  point Point? @relation(fields: [pointId], references: [id])
+  pointId Int?
+  track Track? @relation(fields: [trackId], references: [id])
+  trackId Int?
+  disabled Boolean? @default(false)
+}
+
+model Master {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  photos Photo[]
+  videos Video[]
+  contacts Contact[]
+  belongs OOPT? @relation(fields: [belongsId], references: [id])
+  belongsId Int?
+  disabled Boolean? @default(false)
+}
+
+model Service {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  photos Photo[]
+  videos Video[]
+  contacts Contact[]
+  belongs OOPT? @relation(fields: [belongsId], references: [id])
+  belongsId Int?
+  disabled Boolean? @default(false)
+}
+
+model Contact {
+  id Int @id @default(autoincrement())
+  description String?
+  master Master? @relation(fields: [masterId], references: [id])
+  masterId Int?
+  service Service? @relation(fields: [serviceId], references: [id])
+  serviceId Int?
+  disabled Boolean? @default(false)
+}
+
+model Holiday {
+  id Int @id @default(autoincrement())
+  title String?
+  description String?
+  photos Photo[]
+  videos Video[]
+  belongs OOPT? @relation(fields: [belongsId], references: [id])
+  belongsId Int?
+  disabled Boolean? @default(false)
+}
+
+model Photo {
+  id Int @id @default(autoincrement())
+  small String?
+  large String?
+  description String?
+  alt String @default("Информация отсутствует")
+  oopt OOPT? @relation(fields: [ooptId], references: [id])
+  ooptId Int?
+  town Town? @relation(fields: [townId], references: [id])
+  townId Int?
+  point Point? @relation(fields: [pointId], references: [id])
+  pointId Int?
+  track Track? @relation(fields: [trackId], references: [id])
+  trackId Int?
+  master Master? @relation(fields: [masterId], references: [id])
+  masterId Int?
+  service Service? @relation(fields: [serviceId], references: [id])
+  serviceId Int?
+  holiday Holiday? @relation(fields: [holidayId], references: [id])
+  holidayId Int?
+  disabled Boolean? @default(false)
+}
+
+model Video {
+  id Int @id @default(autoincrement())
+  path String?
+  description String?
+  alt String @default("Информация отсутствует")
+  oopt OOPT? @relation(fields: [ooptId], references: [id])
+  ooptId Int?
+  town Town? @relation(fields: [townId], references: [id])
+  townId Int?
+  point Point? @relation(fields: [pointId], references: [id])
+  pointId Int?
+  track Track? @relation(fields: [trackId], references: [id])
+  trackId Int?
+  master Master? @relation(fields: [masterId], references: [id])
+  masterId Int?
+  service Service? @relation(fields: [serviceId], references: [id])
+  serviceId Int?
+  holiday Holiday? @relation(fields: [holidayId], references: [id])
+  holidayId Int?
+  disabled Boolean? @default(false)
+}
