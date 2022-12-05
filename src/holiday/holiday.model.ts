@@ -18,4 +18,7 @@ export class HolidayModel {
 
   @Field((type) => [VideoModel], { nullable: 'itemsAndList' })
   videos?: VideoModel[] | null;
+
+  @Field((type) => Boolean)
+  disabled: boolean;
 }

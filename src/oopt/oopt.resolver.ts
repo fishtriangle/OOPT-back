@@ -14,15 +14,6 @@ import {
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
 import OoptModel from './oopt.model.js';
-import { PhotoModel } from '../photo/photo.model.js';
-import { VideoModel } from '../video/video.model.js';
-import { TownModel } from '../town/town.model.js';
-import { PointModel } from '../point/point.model.js';
-import { TrackModel } from '../track/track.model.js';
-import { AxisModel } from '../axis/axis.model.js';
-import { MasterModel } from '../master/master.model.js';
-import { ServiceModel } from '../service/service.model.js';
-import { HolidayModel } from '../holiday/holiday.model.js';
 import { ErrorModel } from '../error.model.js';
 
 @InputType()

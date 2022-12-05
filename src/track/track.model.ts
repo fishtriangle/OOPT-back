@@ -45,4 +45,7 @@ export class TrackModel {
 
   @Field({ nullable: true })
   water?: string | null;
+
+  @Field((type) => Boolean)
+  disabled: boolean;
 }

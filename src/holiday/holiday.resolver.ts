@@ -5,17 +5,12 @@ import {
   Mutation,
   Args,
   Context,
-  ResolveField,
-  Root,
   InputType,
   Field,
   Int,
 } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
-import OoptModel from '../oopt/oopt.model.js';
-import { PhotoModel } from '../photo/photo.model.js';
-import { VideoModel } from '../video/video.model.js';
 import { HolidayModel } from './holiday.model.js';
 import { ErrorModel } from '../error.model.js';
 
@@ -35,6 +30,9 @@ class HolidayCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -42,72 +40,22 @@ class HolidayUpdateInput {
   @Field((type) => Int)
   id: number;
 
-  @Field()
+  @Field({ nullable: true })
   title: string;
 
   @Field({ nullable: true })
   description: string;
 
-  @Field((type) => Int)
+  @Field((type) => Int, { nullable: true })
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(HolidayModel)
 export class HolidayResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // async getPhotos(
-  //   @Root() holiday: HolidayModel,
-  //   @Context() ctx,
-  // ): Promise<PhotoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.holiday
-  //       .findUnique({
-  //         where: {
-  //           id: holiday.id,
-  //         },
-  //       })
-  //       .photos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getVideos(
-  //   @Root() holiday: HolidayModel,
-  //   @Context() ctx,
-  // ): Promise<VideoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.holiday
-  //       .findUnique({
-  //         where: {
-  //           id: holiday.id,
-  //         },
-  //       })
-  //       .videos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // getOOPT(@Root() holiday: HolidayModel): Promise<OoptModel | null> {
-  //   return this.prismaService.holiday
-  //     .findUnique({
-  //       where: {
-  //         id: holiday.id,
-  //       },
-  //     })
-  //     .belongs();
-  // }
 
   @Query((returns) => [HolidayModel] || ErrorModel, { nullable: true })
   async getAllHolidays(@Context() ctx): Promise<HolidayModel[] | ErrorModel> {
@@ -172,7 +120,7 @@ export class HolidayResolver {
     @Context() ctx,
   ): Promise<HolidayModel | ErrorModel> {
     try {
-      const holiday = this.prismaService.holiday.findUnique({
+      const holiday = await this.prismaService.holiday.findUnique({
         where: {
           id: id || undefined,
         },
@@ -183,10 +131,10 @@ export class HolidayResolver {
       });
       const errors = [];
 
-      if (holiday.photos) {
+      if (holiday.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (holiday.videos) {
+      if (holiday.videos.length > 0) {
         errors.push('Видео');
       }
       if (errors.length > 0) {

@@ -5,20 +5,14 @@ import {
   Mutation,
   Args,
   Context,
-  ResolveField,
-  Root,
   InputType,
   Field,
   Int,
 } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
-import OoptModel from '../oopt/oopt.model.js';
-import { PhotoModel } from '../photo/photo.model.js';
-import { VideoModel } from '../video/video.model.js';
 import { ServiceModel } from './service.model.js';
 import { ErrorModel } from '../error.model.js';
-import { ContactModel } from '../contact/contact.model.js';
 
 @InputType()
 class ServiceUniqueInput {
@@ -36,6 +30,9 @@ class ServiceCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -43,94 +40,22 @@ class ServiceUpdateInput {
   @Field((type) => Int)
   id: number;
 
-  @Field()
+  @Field({ nullable: true })
   title: string;
 
   @Field({ nullable: true })
   description: string;
 
-  @Field((type) => Int)
+  @Field((type) => Int, { nullable: true })
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(ServiceModel)
 export class ServiceResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // async getContact(
-  //   @Root() service: ServiceModel,
-  //   @Context() ctx,
-  // ): Promise<ContactModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.service
-  //       .findUnique({
-  //         where: {
-  //           id: service.id,
-  //         },
-  //       })
-  //       .contacts();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getPhotos(
-  //   @Root() service: ServiceModel,
-  //   @Context() ctx,
-  // ): Promise<PhotoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.service
-  //       .findUnique({
-  //         where: {
-  //           id: service.id,
-  //         },
-  //       })
-  //       .photos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getVideos(
-  //   @Root() service: ServiceModel,
-  //   @Context() ctx,
-  // ): Promise<VideoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.service
-  //       .findUnique({
-  //         where: {
-  //           id: service.id,
-  //         },
-  //       })
-  //       .videos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // getOOPT(@Root() service: ServiceModel): Promise<OoptModel | null> {
-  //   return this.prismaService.service
-  //     .findUnique({
-  //       where: {
-  //         id: service.id,
-  //       },
-  //     })
-  //     .belongs();
-  // }
-
   @Query((returns) => [ServiceModel] || ErrorModel, { nullable: true })
   async getAllServices(@Context() ctx): Promise<ServiceModel[] | ErrorModel> {
     try {
@@ -196,7 +121,7 @@ export class ServiceResolver {
     @Context() ctx,
   ): Promise<ServiceModel | ErrorModel> {
     try {
-      const service = this.prismaService.service.findUnique({
+      const service = await this.prismaService.service.findUnique({
         where: {
           id: id || undefined,
         },
@@ -206,15 +131,16 @@ export class ServiceResolver {
           contacts: true,
         },
       });
+      console.log(service);
       const errors = [];
 
-      if (service.photos) {
+      if (service.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (service.videos) {
+      if (service.videos.length > 0) {
         errors.push('Видео');
       }
-      if (service.contacts) {
+      if (service.contacts.length > 0) {
         errors.push('Контактная информация');
       }
       if (errors.length > 0) {

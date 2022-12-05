@@ -25,4 +25,7 @@ export class PointModel {
 
   @Field({ nullable: true })
   route?: string | null;
+
+  @Field((type) => Boolean)
+  disabled: boolean;
 }

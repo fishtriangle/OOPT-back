@@ -13,4 +13,7 @@ export class AxisModel {
 
   @Field((type) => Int)
   axisY: number;
+
+  @Field((type) => Boolean)
+  disabled: boolean;
 }

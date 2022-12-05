@@ -5,8 +5,6 @@ import {
   Mutation,
   Args,
   Context,
-  ResolveField,
-  Root,
   InputType,
   Field,
   Int,
@@ -15,8 +13,6 @@ import { Inject } from '@nestjs/common';
 import { ContactModel } from './contact.model.js';
 import { ErrorModel } from '../error.model.js';
 import { PrismaService } from '../prisma.service.js';
-import { MasterModel } from '../master/master.model.js';
-import { ServiceModel } from '../service/service.model.js';
 
 @InputType()
 class ContactUniqueInput {
@@ -54,28 +50,6 @@ class ContactUpdateInput {
 @Resolver(ContactModel)
 export class ContactResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // getMaster(@Root() contact: ContactModel): Promise<MasterModel | null> {
-  //   return this.prismaService.contact
-  //     .findUnique({
-  //       where: {
-  //         id: contact.id,
-  //       },
-  //     })
-  //     .master();
-  // }
-  //
-  // @ResolveField()
-  // getService(@Root() contact: ContactModel): Promise<ServiceModel | null> {
-  //   return this.prismaService.contact
-  //     .findUnique({
-  //       where: {
-  //         id: contact.id,
-  //       },
-  //     })
-  //     .service();
-  // }
 
   @Query((returns) => [ContactModel] || ErrorModel, { nullable: true })
   async getAllContacts(@Context() ctx): Promise<ContactModel[] | ErrorModel> {
