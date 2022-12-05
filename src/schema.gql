@@ -76,7 +76,7 @@ type MasterModel {
   photos: [PhotoModel]
   videos: [VideoModel]
   contacts: [ContactModel]
-  disabled: Boolean!
+  disabled: Boolean
 }
 
 type ServiceModel {
@@ -232,12 +232,14 @@ input TownUpdateInput {
   id: Int!
   title: String
   description: String
+  disabled: Boolean
 }
 
 input TownCreateInput {
   title: String!
   description: String
   parentId: Int!
+  disabled: Boolean
 }
 
 input TrackUpdateInput {
@@ -250,10 +252,11 @@ input TrackUpdateInput {
   timeInTrack: String
   season: String
   water: String
+  disabled: Boolean
 }
 
 input TrackCreateInput {
-  title: String!
+  title: String
   description: String
   length: String
   type: String
@@ -262,6 +265,7 @@ input TrackCreateInput {
   season: String
   water: String
   parentId: Int!
+  disabled: Boolean
 }
 
 input PointUpdateInput {
@@ -269,6 +273,7 @@ input PointUpdateInput {
   title: String
   description: String
   route: String
+  disabled: Boolean
 }
 
 input PointCreateInput {
@@ -277,6 +282,7 @@ input PointCreateInput {
   route: String
   parent: String!
   parentId: Int!
+  disabled: Boolean
 }
 
 input AxisUpdateInput {
@@ -287,7 +293,7 @@ input AxisUpdateInput {
 }
 
 input AxisCreateInput {
-  title: String!
+  title: String
   axisX: Int
   axisY: Int
   parent: String!
@@ -299,12 +305,14 @@ input MasterUpdateInput {
   title: String
   description: String
   parentId: Int
+  disabled: Boolean
 }
 
 input MasterCreateInput {
   title: String!
   description: String
   parentId: Int!
+  disabled: Boolean
 }
 
 input ServiceUpdateInput {

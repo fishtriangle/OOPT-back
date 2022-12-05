@@ -38,6 +38,9 @@ class PointCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -53,107 +56,14 @@ class PointUpdateInput {
 
   @Field({ nullable: true })
   route: string;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(PointModel)
 export class PointResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // async getAxis(
-  //   @Root() point: PointModel,
-  //   @Context() ctx,
-  // ): Promise<AxisModel | ErrorModel> {
-  //   try {
-  //     return this.prismaService.point
-  //       .findUnique({
-  //         where: {
-  //           id: point.id,
-  //         },
-  //       })
-  //       .axis();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getPhotos(
-  //   @Root() point: PointModel,
-  //   @Context() ctx,
-  // ): Promise<PhotoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.point
-  //       .findUnique({
-  //         where: {
-  //           id: point.id,
-  //         },
-  //       })
-  //       .photos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getVideos(
-  //   @Root() point: PointModel,
-  //   @Context() ctx,
-  // ): Promise<VideoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.point
-  //       .findUnique({
-  //         where: {
-  //           id: point.id,
-  //         },
-  //       })
-  //       .videos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // getTown(@Root() point: PointModel): Promise<TownModel | null> {
-  //   return this.prismaService.point
-  //     .findUnique({
-  //       where: {
-  //         id: point.id,
-  //       },
-  //     })
-  //     .town();
-  // }
-  //
-  // @ResolveField()
-  // getOOPT(@Root() point: PointModel): Promise<OoptModel | null> {
-  //   return this.prismaService.point
-  //     .findUnique({
-  //       where: {
-  //         id: point.id,
-  //       },
-  //     })
-  //     .oopt();
-  // }
-  //
-  // @ResolveField()
-  // getTrack(@Root() point: PointModel): Promise<TrackModel | null> {
-  //   return this.prismaService.point
-  //     .findUnique({
-  //       where: {
-  //         id: point.id,
-  //       },
-  //     })
-  //     .track();
-  // }
 
   @Query((returns) => [PointModel] || ErrorModel, { nullable: true })
   async getAllPoints(@Context() ctx): Promise<PointModel[] | ErrorModel> {
@@ -220,7 +130,7 @@ export class PointResolver {
     @Context() ctx,
   ): Promise<PointModel | ErrorModel> {
     try {
-      const point = this.prismaService.point.findUnique({
+      const point = await this.prismaService.point.findUnique({
         where: {
           id: id || undefined,
         },
@@ -232,13 +142,13 @@ export class PointResolver {
       });
       const errors = [];
 
-      if (point.photos) {
+      if (point.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (point.videos) {
+      if (point.videos.length > 0) {
         errors.push('Видео');
       }
-      if (point.axis) {
+      if (point.axis.length > 0) {
         errors.push('Координаты');
       }
       if (errors.length > 0) {

@@ -5,20 +5,14 @@ import {
   Mutation,
   Args,
   Context,
-  ResolveField,
-  Root,
   InputType,
   Field,
   Int,
 } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
-import OoptModel from '../oopt/oopt.model.js';
-import { PhotoModel } from '../photo/photo.model.js';
-import { VideoModel } from '../video/video.model.js';
 import { MasterModel } from './master.model.js';
 import { ErrorModel } from '../error.model.js';
-import { ContactModel } from '../contact/contact.model.js';
 
 @InputType()
 class MasterUniqueInput {
@@ -36,6 +30,9 @@ class MasterCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -51,85 +48,14 @@ class MasterUpdateInput {
 
   @Field((type) => Int, { nullable: true })
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(MasterModel)
 export class MasterResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // async getContact(
-  //   @Root() master: MasterModel,
-  //   @Context() ctx,
-  // ): Promise<ContactModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.master
-  //       .findUnique({
-  //         where: {
-  //           id: master.id,
-  //         },
-  //       })
-  //       .contacts();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getPhotos(
-  //   @Root() master: MasterModel,
-  //   @Context() ctx,
-  // ): Promise<PhotoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.master
-  //       .findUnique({
-  //         where: {
-  //           id: master.id,
-  //         },
-  //       })
-  //       .photos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getVideos(
-  //   @Root() master: MasterModel,
-  //   @Context() ctx,
-  // ): Promise<VideoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.master
-  //       .findUnique({
-  //         where: {
-  //           id: master.id,
-  //         },
-  //       })
-  //       .videos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // getOOPT(@Root() master: MasterModel): Promise<OoptModel | null> {
-  //   return this.prismaService.master
-  //     .findUnique({
-  //       where: {
-  //         id: master.id,
-  //       },
-  //     })
-  //     .belongs();
-  // }
 
   @Query((returns) => [MasterModel] || ErrorModel, { nullable: true })
   async getAllMasters(@Context() ctx): Promise<MasterModel[] | ErrorModel> {
@@ -196,7 +122,7 @@ export class MasterResolver {
     @Context() ctx,
   ): Promise<MasterModel | ErrorModel> {
     try {
-      const master = this.prismaService.master.findUnique({
+      const master = await this.prismaService.master.findUnique({
         where: {
           id: id || undefined,
         },
@@ -208,13 +134,13 @@ export class MasterResolver {
       });
       const errors = [];
 
-      if (master.photos) {
+      if (master.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (master.videos) {
+      if (master.videos.length > 0) {
         errors.push('Видео');
       }
-      if (master.contacts) {
+      if (master.contacts.length > 0) {
         errors.push('Контактная информация');
       }
       if (errors.length > 0) {
@@ -229,6 +155,7 @@ export class MasterResolver {
         where: { id },
       });
     } catch (e) {
+      console.error(e);
       return {
         isError: true,
         message: e.message,

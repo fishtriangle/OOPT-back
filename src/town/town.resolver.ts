@@ -30,6 +30,9 @@ class TownCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -42,6 +45,9 @@ class TownUpdateInput {
 
   @Field({ nullable: true })
   description: string;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(TownModel)
@@ -72,8 +78,6 @@ export class TownResolver {
     @Args('townUniqueInput') townUniqueInput: TownUniqueInput,
   ): Promise<TownModel | ErrorModel> {
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       return this.prismaService.town.findUnique({
         where: {
           id: townUniqueInput.id || undefined,
@@ -101,10 +105,7 @@ export class TownResolver {
     try {
       return this.prismaService.town.update({
         where: { id: data.id || undefined },
-        data: {
-          title: data.title,
-          description: data.description,
-        },
+        data,
       });
     } catch (e) {
       return {
@@ -120,7 +121,7 @@ export class TownResolver {
     @Context() ctx,
   ): Promise<TownModel | ErrorModel> {
     try {
-      const town = this.prismaService.town.findUnique({
+      const town = await this.prismaService.town.findUnique({
         where: {
           id: id || undefined,
         },
@@ -133,16 +134,16 @@ export class TownResolver {
       });
       const errors = [];
 
-      if (town.photos) {
+      if (town.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (town.videos) {
+      if (town.videos.length > 0) {
         errors.push('Видео');
       }
-      if (town.axis) {
+      if (town.axis.length > 0) {
         errors.push('Координаты');
       }
-      if (town.points) {
+      if (town.points.length > 0) {
         errors.push('Точки интереса');
       }
       if (errors.length > 0) {

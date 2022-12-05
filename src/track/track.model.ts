@@ -1,5 +1,4 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import OoptModel from '../oopt/oopt.model.js';
 import { PointModel } from '../point/point.model.js';
 import { AxisModel } from '../axis/axis.model.js';
 import { PhotoModel } from '../photo/photo.model.js';

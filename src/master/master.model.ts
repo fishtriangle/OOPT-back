@@ -23,6 +23,6 @@ export class MasterModel {
   @Field((type) => [ContactModel], { nullable: 'itemsAndList' })
   contacts?: ContactModel[] | null;
 
-  @Field((type) => Boolean)
+  @Field((type) => Boolean, { nullable: true })
   disabled: boolean;
 }

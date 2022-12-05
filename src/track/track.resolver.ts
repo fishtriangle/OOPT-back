@@ -11,12 +11,7 @@ import {
 } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
-import OoptModel from '../oopt/oopt.model.js';
-import { PhotoModel } from '../photo/photo.model.js';
-import { VideoModel } from '../video/video.model.js';
-import { PointModel } from '../point/point.model.js';
 import { TrackModel } from './track.model.js';
-import { AxisModel } from '../axis/axis.model.js';
 import { ErrorModel } from '../error.model.js';
 
 @InputType()
@@ -27,7 +22,7 @@ class TrackUniqueInput {
 
 @InputType()
 class TrackCreateInput {
-  @Field()
+  @Field({ nullable: true })
   title: string;
 
   @Field({ nullable: true })
@@ -53,6 +48,9 @@ class TrackCreateInput {
 
   @Field((type) => Int)
   parentId: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @InputType()
@@ -83,106 +81,14 @@ class TrackUpdateInput {
 
   @Field({ nullable: true })
   water: string;
+
+  @Field((type) => Boolean, { nullable: true })
+  disabled: boolean;
 }
 
 @Resolver(TrackModel)
 export class TrackResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
-
-  // @ResolveField()
-  // async getAxises(
-  //   @Root() track: TrackModel,
-  //   @Context() ctx,
-  // ): Promise<AxisModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.track
-  //       .findUnique({
-  //         where: {
-  //           id: track.id,
-  //         },
-  //       })
-  //       .axises();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getPhotos(
-  //   @Root() track: TrackModel,
-  //   @Context() ctx,
-  // ): Promise<PhotoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.track
-  //       .findUnique({
-  //         where: {
-  //           id: track.id,
-  //         },
-  //       })
-  //       .photos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getVideos(
-  //   @Root() track: TrackModel,
-  //   @Context() ctx,
-  // ): Promise<VideoModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.track
-  //       .findUnique({
-  //         where: {
-  //           id: track.id,
-  //         },
-  //       })
-  //       .videos();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // async getStops(
-  //   @Root() track: TrackModel,
-  //   @Context() ctx,
-  // ): Promise<PointModel[] | ErrorModel> {
-  //   try {
-  //     return this.prismaService.track
-  //       .findUnique({
-  //         where: {
-  //           id: track.id,
-  //         },
-  //       })
-  //       .stops();
-  //   } catch (e) {
-  //     return {
-  //       isError: true,
-  //       message: e.message,
-  //     };
-  //   }
-  // }
-  //
-  // @ResolveField()
-  // getOopt(@Root() track: TrackModel): Promise<OoptModel | null> {
-  //   return this.prismaService.track
-  //     .findUnique({
-  //       where: {
-  //         id: track.id,
-  //       },
-  //     })
-  //     .oopt();
-  // }
 
   @Query((returns) => [TrackModel] || ErrorModel, { nullable: true })
   async getAllTracks(@Context() ctx): Promise<TrackModel[] | ErrorModel> {
@@ -208,7 +114,6 @@ export class TrackResolver {
     @Args('trackUniqueInput') trackUniqueInput: TrackUniqueInput,
   ): Promise<TrackModel | ErrorModel> {
     try {
-      console.log('1');
       return this.prismaService.track.findUnique({
         where: {
           id: trackUniqueInput.id || undefined,
@@ -234,19 +139,11 @@ export class TrackResolver {
     @Context() ctx,
   ): Promise<TrackModel | ErrorModel> {
     try {
-      return this.prismaService.track.update({
+      const result = await this.prismaService.track.update({
         where: { id: data.id || undefined },
-        data: {
-          title: data.title || undefined,
-          description: data.description || undefined,
-          length: data.length || undefined,
-          type: data.type || undefined,
-          transport: data.transport || undefined,
-          timeInTrack: data.timeInTrack || undefined,
-          season: data.season || undefined,
-          water: data.water || undefined,
-        },
+        data,
       });
+      return result;
     } catch (e) {
       return {
         isError: true,
@@ -261,7 +158,7 @@ export class TrackResolver {
     @Context() ctx,
   ): Promise<TrackModel | ErrorModel> {
     try {
-      const track = this.prismaService.track.findUnique({
+      const track = await this.prismaService.track.findUnique({
         where: {
           id: id || undefined,
         },
@@ -274,16 +171,16 @@ export class TrackResolver {
       });
       const errors = [];
 
-      if (track.photos) {
+      if (track.photos.length > 0) {
         errors.push('Фотографии');
       }
-      if (track.videos) {
+      if (track.videos.length > 0) {
         errors.push('Видео');
       }
-      if (track.axises) {
+      if (track.axises.length > 0) {
         errors.push('Поворотные точки');
       }
-      if (track.stops) {
+      if (track.stops.length > 0) {
         errors.push('Стоянки');
       }
       if (errors.length > 0) {

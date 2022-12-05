@@ -28,7 +28,7 @@ class AxisUniqueInput {
 
 @InputType()
 class AxisCreateInput {
-  @Field()
+  @Field({ nullable: true })
   title: string;
 
   @Field((type) => Int, { nullable: true })
