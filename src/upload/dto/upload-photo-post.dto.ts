@@ -24,5 +24,5 @@ export class UploadPhotoPostDto {
     example: 3,
     description: 'Номер экземпляра родительской модели',
   })
-  readonly parentId: number;
+  readonly parentId: string;
 }

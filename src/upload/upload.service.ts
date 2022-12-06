@@ -26,7 +26,9 @@ export class UploadService {
   // }
 
   uploadPhotoPost(data: UploadPhotoPostDto, image: any): Promise<Photo> {
-    const parent = { [data.parent]: { connect: { id: data.parentId } } };
+    const parent = {
+      [data.parent]: { connect: { id: Number(data.parentId) } },
+    };
     return this.filesService
       .createPhotoFile(image)
       .then((fileNames) =>

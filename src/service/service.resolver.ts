@@ -131,7 +131,7 @@ export class ServiceResolver {
           contacts: true,
         },
       });
-      console.log(service);
+
       const errors = [];
 
       if (service.photos.length > 0) {
