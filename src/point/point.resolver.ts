@@ -15,6 +15,7 @@ import { Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
 import { PointModel } from './point.model.js';
 import { ErrorModel } from '../error.model.js';
+import { create } from 'domain';
 
 @InputType()
 class PointUniqueInput {
@@ -183,6 +184,13 @@ export class PointResolver {
           description: data.description || undefined,
           route: data.route || undefined,
           ...parent,
+          axis: {
+            create: {
+              title: 'Достопримечательность',
+              axisX: 1,
+              axisY: 1,
+            },
+          },
         },
       });
     } catch (e) {

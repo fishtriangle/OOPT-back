@@ -52,11 +52,23 @@ export class OoptResolver {
     try {
       return this.prismaService.oOPT.findMany({
         include: {
-          towns: true,
+          towns: {
+            include: {
+              axis: true,
+            },
+          },
           photos: true,
           videos: true,
-          points: true,
-          tracks: true,
+          points: {
+            include: {
+              axis: true,
+            },
+          },
+          tracks: {
+            include: {
+              axises: true,
+            }
+          },
           borders: true,
           masters: true,
           services: true,
@@ -81,11 +93,23 @@ export class OoptResolver {
           id: ooptUniqueInput.id || undefined,
         },
         include: {
-          towns: true,
+          towns: {
+            include: {
+              axis: true,
+            },
+          },
           photos: true,
           videos: true,
-          points: true,
-          tracks: true,
+          points: {
+            include: {
+              axis: true,
+            },
+          },
+          tracks: {
+            include: {
+              axises: true,
+            },
+          },
           borders: true,
           masters: true,
           services: true,
