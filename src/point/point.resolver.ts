@@ -142,6 +142,8 @@ export class PointResolver {
         },
       });
       const errors = [];
+      // console.log(point);
+      // console.log(point.axis[0].id);
 
       if (point.photos.length > 0) {
         errors.push('Фотографии');
@@ -150,8 +152,12 @@ export class PointResolver {
         errors.push('Видео');
       }
       if (point.axis.length > 0) {
-        errors.push('Координаты');
+        await this.prismaService.axis.delete({
+          where: { id: point.axis[0].id },
+        });
       }
+      console.log(errors);
+
       if (errors.length > 0) {
         throw new Error(
           `Для удаления Точки интереса небходимо сначала удалить все объекты из разделов: ${errors.join(
@@ -160,9 +166,11 @@ export class PointResolver {
         );
       }
 
-      return this.prismaService.point.delete({
+      const deleted = await this.prismaService.point.delete({
         where: { id },
       });
+
+      return deleted;
     } catch (e) {
       return {
         isError: true,

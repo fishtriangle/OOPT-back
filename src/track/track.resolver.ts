@@ -98,7 +98,11 @@ export class TrackResolver {
           axises: true,
           photos: true,
           videos: true,
-          stops: true,
+          stops: {
+            include: {
+              axis: true,
+            },
+          },
         },
       });
     } catch (e) {
@@ -122,7 +126,11 @@ export class TrackResolver {
           axises: true,
           photos: true,
           videos: true,
-          stops: true,
+          stops: {
+            include: {
+              axis: true,
+            },
+          },
         },
       });
     } catch (e) {
